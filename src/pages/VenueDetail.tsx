@@ -9,21 +9,32 @@ import { Avatar, Box, Button, Grid, Rating, Tab, Tabs, Typography } from '@mui/m
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
 import { useQuery } from '@tanstack/react-query';
 import { SyntheticEvent, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { ImageLibrary } from '@/components/ImageLibrary';
-import { getField } from '@/services/field/field.service';
-import { getSubFieldsByField } from '@/services/sub-field/sub-field.service';
+import { getPitchesByVenue } from '@/services/pitch/pitch.service';
+import { getVenue } from '@/services/venue/venue.service';
 import convertToAMPM from '@/utils/convertTimestamp';
 
-export const FieldDetail = () => {
-  const { data: field } = useQuery({ queryKey: ['field'], queryFn: () => getField() });
-  const { data: subFields } = useQuery({
-    queryKey: ['subFields'],
+export const VenueDetail = () => {
+  const { slug } = useParams();
+  const { data: venue } = useQuery({
+    queryKey: ['venue'],
     queryFn: () => {
-      if (field) {
-        const { _id } = field;
-        return getSubFieldsByField(_id);
+      if (slug) {
+        return getVenue(slug);
       }
     },
+    enabled: !!slug,
+  });
+  const { data: pitches } = useQuery({
+    queryKey: ['pitches'],
+    queryFn: () => {
+      if (venue) {
+        const { _id } = venue;
+        return getPitchesByVenue(_id);
+      }
+    },
+    enabled: !!venue,
   });
 
   const [tab, setTab] = useState(0);
@@ -45,10 +56,10 @@ export const FieldDetail = () => {
   };
 
   return (
-    field && (
+    venue && (
       <Box marginY={8}>
         <Box display='flex' justifyContent='space-between'>
-          <Typography variant='h3'>{field.name}</Typography>
+          <Typography variant='h3'>{venue.name}</Typography>
           <Box display='flex' alignItems='center'>
             <FavoriteBorderIcon sx={{ marginX: 2 }} />
             <Typography variant='body1'>Yêu thích</Typography>
@@ -57,14 +68,14 @@ export const FieldDetail = () => {
         <Box display='flex' justifyContent='space-between' marginY={1}>
           <Box display='flex' alignItems='center'>
             <PlaceIcon sx={{ marginX: 1, color: 'primary.main' }} />
-            <Typography variant='body1'>{field.address}</Typography>{' '}
+            <Typography variant='body1'>{venue.address}</Typography>{' '}
           </Box>
           <Box display='flex' alignItems='center'>
             <StarIcon sx={{ marginX: 1, color: 'primary.main' }} />
-            <Typography variant='body1'>{field.rating}/5</Typography>
+            <Typography variant='body1'>{venue.rating}/5</Typography>
           </Box>
         </Box>
-        <ImageLibrary imageList={field.imageList} />
+        {venue.imageList.length > 0 && <ImageLibrary imageList={venue.imageList} />}
 
         <Box position='sticky' top={0} bgcolor='primary.contrastText' zIndex={1}>
           <Tabs value={tab} onChange={handleChange}>
@@ -76,8 +87,8 @@ export const FieldDetail = () => {
         </Box>
         <Box marginY={4}>
           <Typography variant='h4'>Danh sách sân</Typography>
-          {subFields &&
-            subFields.map((item) => (
+          {pitches &&
+            pitches.map((item) => (
               <Grid
                 container
                 paddingY={4}
@@ -158,7 +169,7 @@ export const FieldDetail = () => {
             <Box display='flex' alignItems='center'>
               <StarIcon sx={{ fontSize: 44, color: 'primary.main' }} />
               <Typography variant='h3' fontWeight={500}>
-                {field.rating}
+                {venue.rating}
               </Typography>
             </Box>
             <Typography fontWeight={500} variant='h6'>
@@ -168,7 +179,7 @@ export const FieldDetail = () => {
             <Box display='flex' alignItems='center' marginX={2}>
               <FiberManualRecordIcon sx={{ fontSize: 8 }} />
               <Typography variant='h5' marginX={1}>
-                {field.totalReview} Đánh giá
+                {venue.totalReview} Đánh giá
               </Typography>
             </Box>
           </Box>
@@ -244,13 +255,13 @@ export const FieldDetail = () => {
               <Typography variant='h6' fontWeight={500}>
                 Mở cửa
               </Typography>
-              <Typography variant='body1'>{convertToAMPM(field.openAt)}</Typography>
+              <Typography variant='body1'>{convertToAMPM(venue.openAt)}</Typography>
             </Box>
             <Box textAlign='center'>
               <Typography variant='h6' fontWeight={500}>
                 Đóng cửa
               </Typography>
-              <Typography variant='body1'>{convertToAMPM(field.closeAt)}</Typography>
+              <Typography variant='body1'>{convertToAMPM(venue.closeAt)}</Typography>
             </Box>
             <Box textAlign='center'>
               <Typography variant='h6' fontWeight={500}>

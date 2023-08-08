@@ -3,11 +3,11 @@ import StarIcon from '@mui/icons-material/Star';
 import { Box, Grid, Typography } from '@mui/material';
 import { motion } from 'framer-motion';
 import { Link } from './Link';
-import { SearchFieldData } from '@/services/field/field.dto';
+import { SearchVenueData } from '@/services/venue/venue.dto';
 import convertToAMPM from '@/utils/convertTimestamp';
 
 export interface ISearchResultCardProps {
-  data: SearchFieldData;
+  data: SearchVenueData;
 }
 
 export const SearchResultCard = ({ data, ...props }: ISearchResultCardProps) => {
@@ -21,7 +21,7 @@ export const SearchResultCard = ({ data, ...props }: ISearchResultCardProps) => 
         duration: 0.3,
       }}
     >
-      <Link href={`/field/${data.slug}`}>
+      <Link href={`/venue/${data.slug}`}>
         <Grid container bgcolor='primary.contrastText' borderRadius={2} padding={2} marginY={2} {...props}>
           <Grid item md={3}>
             <Link href='/'>

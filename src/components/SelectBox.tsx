@@ -10,7 +10,7 @@ export interface ISelectBoxProps extends PropsWithChildren {
 }
 
 export const SelectBox = ({ value, onChange, placeHolder, children }: ISelectBoxProps) => {
-  const { value: isOpenSearchField, setFalse: closeSearchField, setTrue: openSearchField } = useBoolean(false);
+  const { value: isOpenSearchVenue, setFalse: closeSearchVenue, setTrue: openSearchVenue } = useBoolean(false);
 
   return (
     <Autocomplete
@@ -18,9 +18,9 @@ export const SelectBox = ({ value, onChange, placeHolder, children }: ISelectBox
       id='combo-box-address'
       sx={{ flex: 1 }}
       options={DefaultLocations}
-      open={isOpenSearchField}
-      onClose={closeSearchField}
-      onOpen={openSearchField}
+      open={isOpenSearchVenue}
+      onClose={closeSearchVenue}
+      onOpen={openSearchVenue}
       onInputChange={(_, newValue) => onChange(newValue)}
       value={value}
       PopperComponent={(props) => (

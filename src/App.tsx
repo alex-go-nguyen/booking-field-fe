@@ -6,7 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { MainLayout, SecondaryLayout } from './components/Layout';
 import { Home, Login, Register, Search } from './pages';
-import { FieldDetail } from './pages/FieldDetail';
+import { VenueDetail } from './pages/VenueDetail';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -44,10 +44,10 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/field/:slug',
+    path: '/venue/:slug',
     element: (
       <MainLayout>
-        <FieldDetail />
+        <VenueDetail />
       </MainLayout>
     ),
   },

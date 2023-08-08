@@ -1,18 +1,18 @@
 import { Category } from '../category/category.dto';
-import { Field } from '../field/field.dto';
+import { Venue } from '../venue/venue.dto';
 import { BaseData, BasePaginationResponse } from '@/common/dtos/base.dto';
 
-export type SubFieldsResponse = BasePaginationResponse<SubField>;
-export type GetSubFieldByFieldResponse = BasePaginationResponse<GetSubFieldByFieldData>;
+export type PitchesResponse = BasePaginationResponse<Pitch>;
+export type GetPitchByVenueResponse = BasePaginationResponse<GetPitchByVenueData>;
 
-export type SubField = {
+export type Pitch = {
   no: number;
   price: number;
   category: Category;
-  field: Field;
+  venue: Venue;
 } & BaseData;
 
-export type GetSubFieldByFieldData = {
+export type GetPitchByVenueData = {
   price: number;
   category_id: number;
   name: string;

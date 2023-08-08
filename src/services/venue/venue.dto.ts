@@ -1,11 +1,11 @@
-import { SubField } from '../sub-field/sub-field.dto';
+import { Pitch } from '../pitch/pitch.dto';
 import { BaseData, BasePaginationResponse, BaseResponse } from '@/common/dtos/base.dto';
 
-export type FieldsResponse = BasePaginationResponse<Field>;
-export type FieldResponse = BaseResponse<Field>;
-export type SearchFieldResponse = BasePaginationResponse<SearchFieldData>;
+export type VenuesResponse = BasePaginationResponse<Venue>;
+export type VenueResponse = BaseResponse<Venue>;
+export type SearchVenuesResponse = BasePaginationResponse<SearchVenueData>;
 
-export type SearchFieldQuery = {
+export type SearchVenueQuery = {
   page?: number;
   limit?: number;
   order?: string;
@@ -15,7 +15,7 @@ export type SearchFieldQuery = {
   maxPrice?: number;
 };
 
-export type Field = {
+export type Venue = {
   name: string;
   description: string;
   location: Location;
@@ -25,8 +25,8 @@ export type Field = {
   price: Price;
   rating: number;
   totalReview: number;
-  subFields: SubField[];
-  imageList: FieldImage[];
+  pitches: Pitch[];
+  imageList: VenueImage[];
   openAt: string;
   closeAt: string;
   slug: string;
@@ -42,11 +42,11 @@ export type Price = {
   pricePerHour: number;
 };
 
-export type SearchFieldData = Field & {
+export type SearchVenueData = Venue & {
   price: number;
   category_id: number;
 };
 
-export type FieldImage = {
+export type VenueImage = {
   imagePath: string;
 };

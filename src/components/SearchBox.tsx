@@ -10,29 +10,33 @@ import { useNavigate } from 'react-router-dom';
 import { SelectBox } from './SelectBox';
 import { DEFAULT_MAX_PRICE, DEFAULT_MIN_PRICE } from '@/common/constants';
 import { DefaultLocations } from '@/common/datas/location.data';
-import { getAllCategories } from '@/services/category/category.service';
-import { getFields } from '@/services/field/field.service';
+import { getAllPitchCategories } from '@/services/category/category.service';
+import { getVenues } from '@/services/venue/venue.service';
 
 export const SearchBox = () => {
   const navigate = useNavigate();
 
-  const [fieldType, setFieldType] = useState<string>('');
+  const [pitchCategory, setPitchCategory] = useState<string>('');
 
-  const [searchFieldType, setSearchFieldType] = useState<string>('');
+  const [searchPitchCategory, setSearchPitchCategory] = useState<string>('');
   const [searchAdress, setSearchAdress] = useState<string>('');
 
-  const { data: categories } = useQuery({ queryKey: ['categories'], queryFn: getAllCategories, staleTime: Infinity });
+  const { data: categories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: getAllPitchCategories,
+    staleTime: Infinity,
+  });
 
-  const { data: fields, mutate: getFieldsMutate } = useMutation({
-    mutationKey: ['fields'],
-    mutationFn: (value: string) => getFields({ keyword: value }),
+  const { data: venues, mutate: getVenuesMutate } = useMutation({
+    mutationKey: ['venues'],
+    mutationFn: (value: string) => getVenues({ keyword: value }),
   });
 
   const searchHandler = () => {
     if (DefaultLocations.some((item) => item === searchAdress)) {
       navigate(
-        `/search?location=${searchAdress || DefaultLocations[0]}&category=${
-          searchFieldType || categories?.data[0]._id
+        `/search?location=${searchAdress || DefaultLocations[0]}&pitchCategory=${
+          searchPitchCategory || categories?.data[0]._id
         }&minPrice=${DEFAULT_MIN_PRICE}&maxPrice=${DEFAULT_MAX_PRICE}`,
       );
     }
@@ -41,12 +45,12 @@ export const SearchBox = () => {
   useEffect(() => {
     const getData = setTimeout(() => {
       if (searchAdress !== '') {
-        getFieldsMutate(searchAdress);
+        getVenuesMutate(searchAdress);
       }
     }, 1000);
 
     return () => clearTimeout(getData);
-  }, [searchAdress, getFieldsMutate]);
+  }, [searchAdress, getVenuesMutate]);
 
   return (
     categories && (
@@ -80,7 +84,7 @@ export const SearchBox = () => {
                     <Typography variant='body2' paddingX={1} paddingY={2} fontWeight={700}>
                       Sân bóng
                     </Typography>
-                    {fields?.data.map((item) => (
+                    {venues?.data.map((item) => (
                       <Box
                         onClick={() => setSearchAdress(item.name)}
                         display='flex'
@@ -109,12 +113,16 @@ export const SearchBox = () => {
             <CategoryOutlinedIcon />
             <Box marginLeft={2}>
               <Typography variant='caption'>Loại sân</Typography>
-              <SelectBox value={fieldType} onChange={(data) => setFieldType(data)} placeHolder='Loại sân bạn muốn đặt'>
+              <SelectBox
+                value={pitchCategory}
+                onChange={(data) => setPitchCategory(data)}
+                placeHolder='Loại sân bạn muốn đặt'
+              >
                 {categories.data.map((item) => (
                   <Box
                     onClick={() => {
-                      setSearchFieldType(item._id);
-                      setFieldType(item.name);
+                      setSearchPitchCategory(item._id);
+                      setPitchCategory(item.name);
                     }}
                     display='flex'
                     alignItems='center'
