@@ -31,6 +31,7 @@ import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import MuiDrawer from '@mui/material/Drawer';
 import { useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { RoleEnum } from '@/common/enums/role.enum';
 import { useAuth, useMenu } from '@/hooks';
 
 const drawerWidth = 240;
@@ -98,6 +99,10 @@ export const VenueManagementLayout = () => {
 
   if (!profile) {
     navigate('/');
+  } else {
+    if (profile.role !== RoleEnum.Owner && !profile.venue) {
+      navigate('/');
+    }
   }
 
   return (

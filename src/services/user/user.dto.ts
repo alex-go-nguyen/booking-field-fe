@@ -1,5 +1,6 @@
 import { Venue } from '../venue/venue.dto';
 import { BaseResponse } from '@/common/dtos/base.dto';
+import { RoleEnum } from '@/common/enums/role.enum';
 
 export type UpdateUserResponse = BaseResponse<User>;
 
@@ -13,6 +14,7 @@ export type User = {
   createdAt: Date;
   updatedAt: Date;
   venue: Venue;
+  role: RoleEnum;
 };
 
 export type SignInPayload = {

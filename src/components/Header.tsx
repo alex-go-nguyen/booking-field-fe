@@ -11,6 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { DEFAULT_MAX_PRICE, DEFAULT_MIN_PRICE } from '@/common/constants';
 import { defaultLocations } from '@/common/datas/location.data';
+import { RoleEnum } from '@/common/enums/role.enum';
 import { useAuth, useMenu } from '@/hooks';
 import { pitchCategoryKeys } from '@/services/pitch_category/pitch-category.query';
 
@@ -117,13 +118,15 @@ export const Header = () => {
                   Đặt sân của tôi
                 </MenuItem>
 
-                <MenuItem
-                  sx={{ paddingY: 1.5, fontWeight: 700 }}
-                  onClick={() => navigate('/venue-management/dashboard')}
-                >
-                  <HouseOutlined sx={{ marginRight: 2 }} />
-                  Quản lý sân bóng
-                </MenuItem>
+                {(profile.role === RoleEnum.Owner || profile.venue) && (
+                  <MenuItem
+                    sx={{ paddingY: 1.5, fontWeight: 700 }}
+                    onClick={() => navigate('/venue-management/dashboard')}
+                  >
+                    <HouseOutlined sx={{ marginRight: 2 }} />
+                    Quản lý sân bóng
+                  </MenuItem>
+                )}
                 <MenuItem
                   sx={{ paddingY: 1.5 }}
                   onClick={() => {
