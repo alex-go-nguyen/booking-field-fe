@@ -11,6 +11,7 @@ import {
   AccountProfile,
   BookingComplete,
   BookingManagement,
+  CreateTournament,
   Dashboard,
   Home,
   Login,
@@ -64,6 +65,16 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <Search />,
+          },
+        ],
+      },
+      {
+        path: 'create-tournament',
+        element: <MainLayout />,
+        children: [
+          {
+            index: true,
+            element: <CreateTournament />,
           },
         ],
       },
