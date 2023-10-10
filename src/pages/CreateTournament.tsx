@@ -14,7 +14,7 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { mixed, number, object, string } from 'yup';
 import { UploadImage } from '@/components';
@@ -44,11 +44,15 @@ const schema = object({
 export const CreateTournament = () => {
   const { formatMessage } = useLocale();
 
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
 
   const { profile } = useAuth();
 
   const navigate = useNavigate();
+
+  const [searchParam, setSearchParams] = useSearchParams();
+
+  const tournamentType = searchParam.get('type') as TournamentTypeEnum;
 
   const {
     register,
@@ -59,12 +63,14 @@ export const CreateTournament = () => {
     formState: { errors },
   } = useForm<CreateTournamentDto>({
     resolver: yupResolver(schema),
+    defaultValues: {
+      type: tournamentType,
+    },
   });
 
   const [files, setFiles] = useState<FileList | null>(null);
-  const [type, setType] = useState<TournamentTypeEnum>();
   const [selectedVenue, setSelectedVenue] = useState<Venue | null>(null);
-  const [searchAddress, setSearchAddress] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
 
   const pitchCategoryInstance = pitchCategoryKeys.list({ venueId: Number(selectedVenue?.id) });
   const { data: pitchCategories } = useQuery({
@@ -72,12 +78,12 @@ export const CreateTournament = () => {
     enabled: Boolean(selectedVenue),
   });
 
-  const debounceSearchAddress = useDebounce(searchAddress);
-  const venueInstance = venueKeys.list({ location: debounceSearchAddress });
+  const debounceSearchKeyword = useDebounce(searchKeyword);
+  const venueInstance = venueKeys.search({ location: debounceSearchKeyword });
 
   const { data: venues } = useQuery({
     ...venueInstance,
-    enabled: !!debounceSearchAddress,
+    enabled: !!debounceSearchKeyword,
   });
 
   const { mutate: mutateCreateTournament, isLoading } = useMutation({
@@ -102,7 +108,7 @@ export const CreateTournament = () => {
 
   const humanTournamentTypeName = {
     [TournamentTypeEnum.Knockout]: formatMessage({ id: 'app.tournament.create-tournament.type.knockout' }),
-    [TournamentTypeEnum.RoundRobin]: formatMessage({ id: 'app.tournament.create-tournament.type.round-robin' }),
+    [TournamentTypeEnum.RoundRobin]: formatMessage({ id: 'app.tournament.create-tournament.type.round_robin' }),
   };
 
   const onSubmitHandler = (data: CreateTournamentDto) => mutateCreateTournament(data);
@@ -116,7 +122,7 @@ export const CreateTournament = () => {
   if (!profile) {
     navigate('/login', {
       state: {
-        redirect: pathname,
+        redirect: `${pathname}${search}`,
       },
     });
   }
@@ -216,9 +222,9 @@ export const CreateTournament = () => {
                 {formatMessage({ id: 'app.tournament.create-tournament.address' })}
               </Typography>
               <Autocomplete
-                id='country-select-demo'
+                id='venue-select'
                 options={venues?.data || []}
-                onInputChange={(_, value) => setSearchAddress(value)}
+                onInputChange={(_, value) => setSearchKeyword(value)}
                 onChange={(_, value) => {
                   setValue('venue', Number(value?.id));
                   setSelectedVenue(value);
@@ -283,15 +289,16 @@ export const CreateTournament = () => {
                 alignItems='center'
                 width={150}
                 height={100}
-                bgcolor={type === value ? 'primary.main' : ''}
+                bgcolor={watch('type') === value ? 'primary.main' : ''}
                 borderRadius={4}
                 padding={2}
                 border={1}
                 borderColor='primary.main'
-                sx={{ color: type === value ? 'primary.contrastText' : 'inherit', cursor: 'pointer' }}
+                sx={{ color: watch('type') === value ? 'primary.contrastText' : 'inherit', cursor: 'pointer' }}
                 onClick={() => {
                   setValue('type', value);
-                  setType(value);
+                  searchParam.set('type', value);
+                  setSearchParams((prev) => [...prev]);
                 }}
                 key={value}
               >
@@ -316,10 +323,10 @@ export const CreateTournament = () => {
               {errors.totalTeam.message}
             </Typography>
           )}
-          {type && (
+          {watch('type') && (
             <Typography marginY={2} paddingY={1} paddingX={2} bgcolor='secondary.light' borderRadius={1}>
               {formatMessage({ id: 'app.tournament.create-tournament.total-match' })}{' '}
-              {totalMatches(watch('totalTeam'), type)}
+              {totalMatches(watch('totalTeam'), watch('type'))}
             </Typography>
           )}
           <Box marginY={2}>
@@ -337,7 +344,7 @@ export const CreateTournament = () => {
               {formatMessage({ id: 'app.tournament.create-tournament.pitch.type.sub-title' })}
             </Typography>
             {pitchCategories && pitchCategories.data.length > 0 && (
-              <Select defaultValue={pitchCategories.data[0].id} {...register('pitchCategory')} fullWidth>
+              <Select defaultValue={pitchCategories.data[0].id} {...register('pitchCategory')} fullWidth size='small'>
                 {pitchCategories.data.map((item) => (
                   <MenuItem value={item.id} key={item.id}>
                     {item.name}
@@ -356,7 +363,7 @@ export const CreateTournament = () => {
       <Button
         variant='contained'
         sx={{
-          marginY: 2,
+          marginY: 1,
           width: {
             xs: '100%',
             md: 'fit-content',

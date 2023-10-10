@@ -1,13 +1,18 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Autocomplete, Backdrop, Box, Button, CircularProgress, Grid, TextField, Typography } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { TimePicker } from '@mui/x-date-pickers';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import dayjs, { Dayjs } from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { object, string } from 'yup';
-import { useBoolean, useVenueByCurrentUser, useVenueMutation } from '@/hooks';
+import { useBoolean, useVenueByCurrentUser } from '@/hooks';
 import { useLocale } from '@/locales';
 import { locationKeys } from '@/services/location/location.query';
 import { UpdateVenueData } from '@/services/venue/venue.dto';
+import venueService from '@/services/venue/venue.service';
+import { timeStringToDate } from '@/utils';
 
 const schema = object({
   name: string(),
@@ -23,13 +28,21 @@ export const InfoManagement = () => {
 
   const { value: isFixingMode, setFalse: closeFixingMode, setTrue: openFixingMode } = useBoolean(false);
 
-  const { register, handleSubmit, reset } = useForm({ resolver: yupResolver(schema) });
+  const { register, handleSubmit, reset, setValue } = useForm({ resolver: yupResolver(schema) });
 
   const [currentProvince, setCurrentProvince] = useState<string>();
   const [currentDistrict, setCurrentDistrict] = useState<string[]>();
 
-  const { updateVenueMutation, isUpdating } = useVenueMutation();
+  const [close, setClose] = useState<Dayjs | null>();
+  const [open, setOpen] = useState<Dayjs | null>();
 
+  const { mutate: updateVenueMutation, isLoading: isUpdating } = useMutation({
+    mutationFn: venueService.update,
+    onSuccess: () => {
+      toast.success('Update venue successfully');
+      closeFixingMode();
+    },
+  });
   const { data: venue } = useVenueByCurrentUser();
 
   const locationInstace = locationKeys.list();
@@ -81,20 +94,30 @@ export const InfoManagement = () => {
           <Grid item marginY={2} xs={12} display='flex' gap={4}>
             <Box>
               <Typography variant='body2'>{formatMessage({ id: 'app.register-venue.venue.open' })}</Typography>
-              <TextField
+              <TimePicker
+                slotProps={{ textField: { size: 'medium', fullWidth: true } }}
+                ampm={false}
                 disabled={!isFixingMode}
-                variant='outlined'
-                defaultValue={venue.openAt}
-                {...register('openAt')}
+                defaultValue={timeStringToDate(venue.openAt)}
+                value={open}
+                onChange={(date) => {
+                  setOpen(date);
+                  setValue('openAt', dayjs(date).format('HH:mm'));
+                }}
               />
             </Box>
             <Box>
               <Typography variant='body2'>{formatMessage({ id: 'app.register-venue.venue.close' })}</Typography>
-              <TextField
+              <TimePicker
+                slotProps={{ textField: { size: 'medium', fullWidth: true } }}
+                ampm={false}
+                defaultValue={timeStringToDate(venue.closeAt)}
                 disabled={!isFixingMode}
-                variant='outlined'
-                defaultValue={venue.closeAt}
-                {...register('closeAt')}
+                value={close}
+                onChange={(date) => {
+                  setClose(date);
+                  setValue('closeAt', dayjs(date).format('HH:mm'));
+                }}
               />
             </Box>
           </Grid>

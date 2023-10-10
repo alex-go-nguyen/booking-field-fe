@@ -12,7 +12,7 @@ export type SetTimeScheduleProps = {
 export const SetTimeSchedule = ({ isOpen, onClose, onSave, data }: SetTimeScheduleProps) => {
   const rangeTime = data.reduce<number[]>((arr, time, index) => {
     if (index !== data.length - 1) {
-      if (time.endTime === data[index + 1].startTime && time.id !== -1) {
+      if (time.endTime === data[index + 1].startTime && !time.isFreeTime) {
         if (time.startTime === 0) {
           return [time.startTime];
         }
@@ -21,7 +21,7 @@ export const SetTimeSchedule = ({ isOpen, onClose, onSave, data }: SetTimeSchedu
 
       return [...arr, time.startTime, time.endTime];
     } else {
-      if (time.id !== -1) {
+      if (!time.isFreeTime) {
         return [...arr, time.endTime];
       }
       return [...arr, time.startTime, time.endTime];

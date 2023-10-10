@@ -12,7 +12,7 @@ export const LocationManagement = () => {
   const { data: venue } = useVenueByCurrentUser();
 
   const { updateVenueMutation, isUpdating } = useVenueMutation();
-  const [selectedLatLng, setSelectedLatLng] = useState<LocationMap>(venue?.location || { lat: 10, lng: 106 });
+  const [selectedLatLng, setSelectedLatLng] = useState<LocationMap | null>();
 
   const handleSaveLocation = () => {
     if (venue && selectedLatLng) {
@@ -32,13 +32,16 @@ export const LocationManagement = () => {
   return (
     venue && (
       <>
-        <Box display='flex' justifyContent='space-between' gap={2}>
-          <MapPlace onChange={(locationValue) => locationValue && setSelectedLatLng(locationValue)} />
+        <Box display='flex' justifyContent='space-between' gap={2} mb={2}>
+          <MapPlace
+            onChange={(locationValue) => locationValue && setSelectedLatLng(locationValue)}
+            placeholder={formatMessage({ id: 'app.venue.address.title' })}
+          />
           <Button variant='contained' size='small' onClick={handleSaveLocation} disabled={!selectedLatLng}>
             {formatMessage({ id: 'app.your-venue.tabs.address.save' })}
           </Button>
         </Box>
-        <LocationPicker location={selectedLatLng} onChange={(value) => setSelectedLatLng(value)} />
+        <LocationPicker location={selectedLatLng || venue.location} onChange={(value) => setSelectedLatLng(value)} />
 
         <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isUpdating}>
           <CircularProgress color='inherit' />

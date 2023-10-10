@@ -9,7 +9,7 @@ import authService from '@/services/auth/auth.service';
 import { notificationKeys } from '@/services/notification/notification.query';
 import { userKeys } from '@/services/user/user.query';
 
-const NODE_ENV = import.meta.env.NODE_ENV;
+const NODE_ENV = import.meta.env.VITE_NODE_ENV;
 export const useAuth = () => {
   const [accessToken, setAccessToken] = useState<string | undefined>(Cookies.get('access_token'));
 
@@ -51,7 +51,7 @@ export const useAuth = () => {
         icon: '/logo.png',
         timeout: 4000,
       });
-      queryClient.invalidateQueries(notificationKeys.lists());
+      queryClient.invalidateQueries(notificationKeys.all);
     });
 
     socket?.on('update_venue_status', (message) => {
@@ -60,7 +60,7 @@ export const useAuth = () => {
         icon: '/logo.png',
         timeout: 4000,
       });
-      queryClient.invalidateQueries(notificationKeys.lists());
+      queryClient.invalidateQueries(notificationKeys.all);
     });
 
     return () => {

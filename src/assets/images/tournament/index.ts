@@ -6,5 +6,5 @@ export const tournamentImages = [
     label: 'knockout',
     src: tournament1,
   },
-  { label: 'round-robin', src: tournament2 },
+  { label: 'round_robin', src: tournament2 },
 ];

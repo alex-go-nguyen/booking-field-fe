@@ -102,4 +102,5 @@ export type VenueImage = {
 export type VenueQuery = {
   status?: VenueStatusEnum;
   userId?: number;
+  keyword?: string;
 } & BaseQuery;

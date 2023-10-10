@@ -3,10 +3,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
+import { HelmetProvider } from 'react-helmet-async';
 import { IntlProvider } from 'react-intl';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import { TournamentLayout, UserAccountLayout } from './components';
+import { GoogleMapApiProvider, TournamentLayout, UserAccountLayout } from './components';
 import NotFound from './components/NotFound';
 import { useLocalStorage } from './hooks';
 import { VenueManagementLayout, Layout, AuthLayout } from './layouts';
@@ -248,14 +249,18 @@ function App() {
     } else if (locale === 'vi') {
       moment.locale('vi');
     }
-  });
+  }, [locale]);
 
   return (
     <QueryClientProvider client={queryClient}>
       <IntlProvider locale={locale.split('_')[0]} messages={localeConfig[locale]}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <ToastContainer position='bottom-right' autoClose={1000} />
-          <RouterProvider router={router} />
+          <GoogleMapApiProvider>
+            <ToastContainer position='bottom-right' autoClose={1000} />
+            <HelmetProvider>
+              <RouterProvider router={router} />
+            </HelmetProvider>
+          </GoogleMapApiProvider>
         </LocalizationProvider>
       </IntlProvider>
     </QueryClientProvider>

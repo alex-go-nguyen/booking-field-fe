@@ -42,10 +42,6 @@ export type GetPitchesByVenueQuery = {
 };
 
 export type PitchesQuery = {
-  order?: string;
-  keyword?: string;
   pitchCategoryId?: number;
   venueId?: number;
-  minPrice?: number;
-  maxPrice?: number;
 } & PaginationQuery;

@@ -1,4 +1,4 @@
-import { Check } from '@mui/icons-material';
+import { ArrowDropDown } from '@mui/icons-material';
 import { Box, Button, Menu, MenuItem, Typography } from '@mui/material';
 import { LanguageImages } from '@/assets/images/language';
 import { useLocalStorage, useMenu } from '@/hooks';
@@ -43,9 +43,7 @@ export const LangueSwitcher = () => {
           sx={{ objectFit: 'cover' }}
           marginRight={1}
         />
-        {formatMessage({
-          id: currentLocale === 'vi' ? 'app.home.header.translate.vi' : 'app.home.header.translate.en',
-        })}
+        <ArrowDropDown />
       </Button>
       <Menu
         id='translation-menu'
@@ -70,13 +68,18 @@ export const LangueSwitcher = () => {
               closeTranslationMenu();
               setCurrentLocale(item.locale);
             }}
-            sx={{ paddingLeft: 6 }}
+            key={item.locale}
           >
-            {currentLocale === item.locale && (
-              <Box position='absolute' left={12}>
-                <Check />
-              </Box>
-            )}
+            <Box
+              component='img'
+              src={LanguageImages[item.locale]}
+              alt={currentLocale}
+              height={20}
+              width={20}
+              borderRadius='50%'
+              sx={{ objectFit: 'cover' }}
+              marginRight={1}
+            />
             <Typography>{item.title}</Typography>
           </MenuItem>
         ))}

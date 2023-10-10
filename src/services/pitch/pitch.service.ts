@@ -10,23 +10,8 @@ import axiosInstance from '@/utils/axiosConfig';
 
 const pitchService = {
   getAll: async (query: PitchesQuery) => {
-    const { keyword, pitchCategoryId, venueId, minPrice, maxPrice, order, page, limit } = query;
-
     const { data } = await axiosInstance.get<PitchesResponse>(`/pitches`, {
-      params: {
-        location: keyword,
-        pitchCategoryId,
-        venueId,
-        minPrice,
-        maxPrice,
-        page,
-        limit,
-        sorts: [
-          {
-            price: order,
-          },
-        ],
-      },
+      params: query,
     });
 
     return data;

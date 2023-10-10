@@ -29,7 +29,7 @@ export const Booking = () => {
 
   const navigate = useNavigate();
 
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
 
   const { profile, socket } = useAuth();
 
@@ -44,7 +44,7 @@ export const Booking = () => {
   const [selectedPitch, setSelectedPitch] = useState<Pitch>();
 
   const venueInstance = venueKeys.detail(slug);
-  const { data: venue, refetch: venueRefetch } = useQuery({ ...venueInstance, enabled: !!slug });
+  const { data: venue, refetch: refetchVenue } = useQuery({ ...venueInstance, enabled: !!slug });
 
   const bookingInstance = bookingKeys.list({
     pitchId: selectedPitch?.id,
@@ -52,7 +52,7 @@ export const Booking = () => {
     sorts: [{ field: 'startTime', order: OrderEnum.Asc }],
   });
 
-  const { data: bookings, refetch: bookingsRefetch } = useQuery({
+  const { data: bookings, refetch: refetchBookings } = useQuery({
     ...bookingInstance,
     enabled: !!selectedPitch && !!selectedDate,
   });
@@ -69,14 +69,14 @@ export const Booking = () => {
   const pitchInstance = pitchKeys.list({ venueId: venue?.id, pitchCategoryId });
   const { data: pitches } = useQuery({
     ...pitchInstance,
-    enabled: !!venue,
+    enabled: Boolean(venue),
   });
 
-  const times = bookings && findFreeTime(bookings.data);
+  const times = bookings && venue && findFreeTime(bookings.data, venue);
 
   const rangeTime = times?.reduce<number[]>((arr, time, index) => {
     if (index !== times.length - 1) {
-      if (time.endTime === times[index + 1].startTime && time.id !== -1) {
+      if (time.endTime === times[index + 1].startTime && !time.isFreeTime) {
         if (time.startTime === 0) {
           return [time.startTime];
         }
@@ -85,7 +85,7 @@ export const Booking = () => {
 
       return [...arr, time.startTime, time.endTime];
     } else {
-      if (time.id !== -1) {
+      if (!time.isFreeTime) {
         return [...arr, time.endTime];
       }
       return [...arr, time.startTime, time.endTime];
@@ -120,8 +120,8 @@ export const Booking = () => {
   };
 
   useEffect(() => {
-    venueRefetch();
-  }, [slug, venueRefetch]);
+    refetchVenue();
+  }, [slug, refetchVenue]);
 
   useEffect(() => {
     if (selectedPitch && selectedTime) {
@@ -131,15 +131,15 @@ export const Booking = () => {
 
   useEffect(() => {
     if (selectedDate && selectedPitch) {
-      bookingsRefetch();
+      refetchBookings();
       setSelectedTime(null);
     }
-  }, [selectedDate, selectedPitch, bookingsRefetch]);
+  }, [selectedDate, selectedPitch, refetchBookings]);
 
   if (!profile) {
     navigate('/login', {
       state: {
-        redirect: pathname,
+        redirect: `${pathname}${search}`,
       },
     });
   }

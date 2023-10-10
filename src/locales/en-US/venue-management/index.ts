@@ -20,7 +20,7 @@ export const en_US_venue_management = {
   'app.your-venue.tabs.images': 'Images',
   'app.your-venue.tabs.images.add.title': 'Add new',
   'app.your-venue.tabs.address': 'Address',
-  'app.your-venue.tabs.address.save': 'Save address',
+  'app.your-venue.tabs.address.save': 'Save',
 
   'app.your-venue.tabs.pitch': 'Pitch',
   'app.your-venue.tabs.pitch.add-box.title': 'Add pitch',

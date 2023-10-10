@@ -25,6 +25,7 @@ export const enUS_home = {
   'app.home.prominant.title': 'Prominant venues',
   'app.home.nearby.title': 'Nearby venues',
   'app.home.nearby.result.card.distance': '{distance} away',
+  'app.home.nearby.suggest': 'Open location permisstion to get venues near you',
 
   'app.footer.support.title': 'Support',
   'app.footer.support.item.hotline': 'Hotline',

@@ -10,7 +10,7 @@ export const enUS_tournament = {
   'app.tournament.create-tournament.mode.public': 'Public',
   'app.tournament.create-tournament.type': 'Tournament Type',
   'app.tournament.create-tournament.type.knockout': 'Knockout',
-  'app.tournament.create-tournament.type.round-robin': 'Round Robin',
+  'app.tournament.create-tournament.type.round_robin': 'Round Robin',
   'app.tournament.create-tournament.participant': 'Number of Participating Teams',
   'app.tournament.create-tournament.total-match': 'For this configuration, the number of matches in the tournament is',
   'app.tournament.create-tournament.pitch.type.title': 'Pitch Type',

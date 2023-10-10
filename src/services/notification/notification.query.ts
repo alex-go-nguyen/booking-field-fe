@@ -9,4 +9,6 @@ export const notificationKeys = {
     defineQuery([...notificationKeys.lists()], () => notificationService.getAll(query)),
   details: () => [...notificationKeys.all, 'detail'] as const,
   detail: (id: number) => defineQuery([...notificationKeys.details(), id], () => notificationService.getOne(id)),
+  countNotSeens: () => [...notificationKeys.all, 'count-not-seen'] as const,
+  countNotSeen: () => defineQuery([...notificationKeys.countNotSeens()], () => notificationService.getCountNotSeen()),
 };

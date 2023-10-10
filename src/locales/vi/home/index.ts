@@ -25,6 +25,7 @@ export const vi_home = {
   'app.home.prominant.title': 'Sân bóng nổi bật',
   'app.home.nearby.title': 'Sân bóng gần đây',
   'app.home.nearby.result.card.distance': 'Cách đây {distance}',
+  'app.home.nearby.suggest': 'Mở quyền truy cập vị trí để xem những sân bóng gần khu vực của bạn',
 
   'app.footer.support.title': 'Hỗ trợ',
   'app.footer.support.item.hotline': 'Hotline',

@@ -1,33 +1,31 @@
-import { Autocomplete, InputBase, Popper } from '@mui/material';
+import { Autocomplete, InputBase, InputBaseProps, Popper } from '@mui/material';
 import { PropsWithChildren } from 'react';
 import { defaultLocations } from '@/common/datas/location.data';
 import { useBoolean } from '@/hooks';
 
-export interface SelectBoxProps extends PropsWithChildren {
+export interface SelectBoxProps extends Omit<InputBaseProps, 'onChange' | 'value' | 'placeHolder'> {
   value: string;
   onChange: (data: string) => void;
   placeHolder: string;
 }
 
-export const SelectBox = ({ value, onChange, placeHolder, children, ...props }: SelectBoxProps) => {
+export const SelectBox = ({ value, onChange, placeHolder, children, ...props }: PropsWithChildren<SelectBoxProps>) => {
   const { value: isOpen, setFalse, setTrue } = useBoolean(false);
 
   return (
     <Autocomplete
       disablePortal
-      id='combo-box-address'
       options={defaultLocations}
       open={isOpen}
       onClose={setFalse}
       onOpen={setTrue}
       onInputChange={(_, newValue) => onChange(newValue)}
       value={value}
+      noOptionsText='No results'
       fullWidth
-      {...props}
       PopperComponent={(props) => (
         <Popper
           sx={{
-            maxWidth: '80%',
             maxHeight: 500,
             overflowY: 'scroll',
             bgcolor: 'primary.contrastText',
@@ -49,10 +47,6 @@ export const SelectBox = ({ value, onChange, placeHolder, children, ...props }: 
           sx={{
             display: 'flex',
             height: '100%',
-            paddingTop: 4,
-            paddingLeft: 8,
-            paddingBottom: 1,
-            position: 'relative',
           }}
           ref={params.InputProps.ref}
           {...params}
@@ -60,6 +54,7 @@ export const SelectBox = ({ value, onChange, placeHolder, children, ...props }: 
           onChange={(e) => onChange(e.target.value)}
           fullWidth
           placeholder={placeHolder}
+          {...props}
         />
       )}
     />
