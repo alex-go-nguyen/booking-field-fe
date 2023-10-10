@@ -54,5 +54,5 @@ const StyledTextarea = styled(TextareaAutosize)(
 );
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextareaAutosizeProps>((props: TextareaAutosizeProps, ref) => {
-  return <StyledTextarea ref={ref} {...props} />;
+  return <StyledTextarea ref={ref} {...props} sx={{ fontSize: 16 }} />;
 });

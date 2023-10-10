@@ -14,7 +14,7 @@ export const AuthLayout = () => {
     if (profile) {
       navigate(state?.redirect || '/');
     }
-  }, [profile, navigate]);
+  }, [profile, navigate, state?.redirect]);
 
   if (!isFetched || profile) {
     return null;

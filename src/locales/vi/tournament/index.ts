@@ -10,7 +10,7 @@ export const vi_tournament = {
   'app.tournament.create-tournament.mode.public': 'Công khai',
   'app.tournament.create-tournament.type': 'Hình thức thi đấu',
   'app.tournament.create-tournament.type.knockout': 'Loại trực tiếp',
-  'app.tournament.create-tournament.type.round-robin': 'Xoay vòng',
+  'app.tournament.create-tournament.type.round_robin': 'Xoay vòng',
   'app.tournament.create-tournament.participant': 'Số đội tham gia',
   'app.tournament.create-tournament.total-match': 'Đối với cấu hình này thì số trận đấu của giải là',
   'app.tournament.create-tournament.pitch.type.title': 'Loại sân thi đấu',

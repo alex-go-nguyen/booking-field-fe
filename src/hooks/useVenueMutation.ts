@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify';
-import { UpdateVenuePayload } from '@/services/venue/venue.dto';
 import { venueKeys } from '@/services/venue/venue.query';
 import venueService from '@/services/venue/venue.service';
 
@@ -12,9 +11,9 @@ export const useVenueMutation = () => {
     isLoading: isUpdating,
     reset: resetUpdateState,
   } = useMutation({
-    mutationFn: ({ id, data }: UpdateVenuePayload) => venueService.update({ id, data }),
+    mutationFn: venueService.update,
     onSuccess: () => {
-      queryClient.invalidateQueries(venueKeys.details());
+      queryClient.invalidateQueries(venueKeys.currentUsers());
       toast.success('Update venue successfully');
     },
   });

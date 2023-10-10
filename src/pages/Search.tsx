@@ -1,6 +1,6 @@
 import { ArrowDropDown, Sort, Tune } from '@mui/icons-material';
 import { Box, Button, Grid, Pagination, Skeleton, Typography } from '@mui/material';
-import { GoogleMap, useLoadScript, OverlayViewF, OverlayView } from '@react-google-maps/api';
+import { GoogleMap, OverlayViewF, OverlayView } from '@react-google-maps/api';
 import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -9,7 +9,7 @@ import { useSearchParams } from 'react-router-dom';
 import { commonImages } from '@/assets/images/common';
 import { DEFAULT_MAX_PRICE, DEFAULT_MIN_PRICE } from '@/common/constants';
 import { OrderEnum } from '@/common/enums/order.enum';
-import { SearchFilter, SearchResultCard, SearchSort, VenueInfoMapPopup } from '@/components';
+import { SearchFilter, SearchResultCard, SearchSort, VenueInfoMapPopup, useGoogleMapApi } from '@/components';
 import { useBoolean } from '@/hooks';
 import { pitchCategoryKeys } from '@/services/pitch_category/pitch-category.query';
 import { LocationMap, SearchVenueData } from '@/services/venue/venue.dto';
@@ -65,9 +65,7 @@ export const Search = () => {
   });
   const { data: venues, refetch: venueRefetch, isLoading: isVenueLoading } = useQuery(venueInstance);
 
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-  });
+  const { isLoaded } = useGoogleMapApi();
 
   const [activeMarker, setActiveMarker] = useState<SearchVenueData | null>(null);
 
@@ -191,9 +189,13 @@ export const Search = () => {
         </Grid>
         <Grid
           item
+          xs={12}
           md={12}
           lg={4}
-          height={700}
+          height={{
+            md: 700,
+            xs: 400,
+          }}
           position='sticky'
           top={10}
           overflow='hidden'

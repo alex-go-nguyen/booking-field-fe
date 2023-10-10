@@ -9,11 +9,9 @@ export interface SripeContainerProps extends PaymentFormProps {
   currency: string;
   amount: number;
 }
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+
 export const StripeContainer = ({ currency, amount, onSubmit }: SripeContainerProps) => {
-  const STRIPE_PUBLIC_KEY = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
-
-  const stripePromise = loadStripe(STRIPE_PUBLIC_KEY);
-
   const { data, mutate } = useMutation({
     mutationFn: stripeService.getClientSecret,
   });
@@ -23,12 +21,13 @@ export const StripeContainer = ({ currency, amount, onSubmit }: SripeContainerPr
   }, [currency, amount, mutate]);
 
   return (
-    <>
-      {data && stripePromise && (
-        <Elements stripe={stripePromise} options={{ clientSecret: data }}>
+    data &&
+    stripePromise && (
+      <>
+        <Elements stripe={stripePromise} options={{ clientSecret: data.clientSecret }}>
           <PaymentForm onSubmit={onSubmit} />
         </Elements>
-      )}
-    </>
+      </>
+    )
   );
 };

@@ -6,6 +6,7 @@ export const vi_venue_management = {
   'app.dashboard.totalIncome': 'Tổng thu nhập',
   'app.dashboard.totalBooking': 'Số lượng đơn đặt sân',
   'app.dashboard.monthly-income.title': 'Thu nhập hàng tháng',
+  'app.dashboard.monthly-income.total': 'Tổng',
   'app.dashboard.monthly-income.sub-title': 'Tổng thu nhập theo từng tháng',
   'app.dashboard.monthly-income.option': '{month} tháng gần đây',
   'app.dashboard.monthly-income.chart.title': 'Thu nhập thường ngày',
@@ -19,7 +20,7 @@ export const vi_venue_management = {
   'app.your-venue.tabs.images': 'Hình ảnh',
   'app.your-venue.tabs.images.add.title': 'Thêm mới',
   'app.your-venue.tabs.address': 'Địa chỉ',
-  'app.your-venue.tabs.address.save': 'Lưu địa chỉ',
+  'app.your-venue.tabs.address.save': 'Lưu',
 
   'app.your-venue.tabs.pitch': 'Sân bóng',
   'app.your-venue.tabs.pitch.add-box.title': 'Thêm sân',

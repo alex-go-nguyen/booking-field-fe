@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { number, object, string } from 'yup';
+import { useLocale } from '@/locales';
 import { CreatePitchDto } from '@/services/pitch/pitch.dto';
 import { pitchCategoryKeys } from '@/services/pitch_category/pitch-category.query';
 import { Venue } from '@/services/venue/venue.dto';
@@ -16,13 +17,15 @@ export interface AddNewPitchBox {
 }
 
 const schema = object({
-  name: string().required(),
-  price: number().required().min(0),
-  pitchCategory: number().required(),
+  name: string().required('Vui lòng nhập tên sân'),
+  price: number().required('Vui lòng nhập giá sân').min(0),
+  pitchCategory: number().required('Vui lòng chọn loại sân'),
   venue: number().required(),
 });
 
 export const AddNewPitchBox = ({ venue, isOpen, onClose, onSubmit }: AddNewPitchBox) => {
+  const { formatMessage } = useLocale();
+
   const pitchCategoryInstance = pitchCategoryKeys.list();
 
   const { data: categories } = useQuery({ ...pitchCategoryInstance, staleTime: Infinity });
@@ -66,31 +69,31 @@ export const AddNewPitchBox = ({ venue, isOpen, onClose, onSubmit }: AddNewPitch
       >
         <Box component='form' onSubmit={handleSubmit(onSubmitHandler)}>
           <Typography variant='h5' fontWeight={700} textAlign='center' marginY={2}>
-            Thêm sân bóng
+            {formatMessage({ id: 'app.your-venue.tabs.pitch.add-box.title' })}
           </Typography>
           <Divider />
           <Box padding={4}>
             <Box paddingY={2}>
-              <Typography>Tên sân</Typography>
-              <TextField fullWidth {...register('name')} />
+              <Typography>{formatMessage({ id: 'app.your-venue.tabs.pitch.add-box.name' })}</Typography>
+              <TextField fullWidth {...register('name')} placeholder='Sân 1' />
               {errors.name && (
                 <Typography variant='caption' color='error.main'>
-                  * Vui lòng nhập tên sân
+                  *{errors.name.message}
                 </Typography>
               )}
             </Box>
             <Box paddingY={2}>
-              <Typography>Giá sân theo giờ</Typography>
-              <TextField type='number' fullWidth {...register('price')} />
+              <Typography>{formatMessage({ id: 'app.your-venue.tabs.pitch.add-box.price-per-hour' })}</Typography>
+              <TextField type='number' fullWidth {...register('price')} placeholder={'120000'} />
               {errors.price && (
                 <Typography variant='caption' color='error.main'>
-                  * Vui lòng nhập giá sân
+                  *{errors.price.message}
                 </Typography>
               )}
             </Box>
             <Box paddingY={2}>
-              <Typography>Loại Sân</Typography>
-              <Select {...register('pitchCategory')} fullWidth>
+              <Typography>{formatMessage({ id: 'app.your-venue.tabs.pitch.add-box.category' })}</Typography>
+              <Select {...register('pitchCategory')} fullWidth defaultValue={categories?.data[0].id}>
                 {categories?.data.map((item) => (
                   <MenuItem value={item.id} key={item.id}>
                     {item.name}
@@ -99,16 +102,16 @@ export const AddNewPitchBox = ({ venue, isOpen, onClose, onSubmit }: AddNewPitch
               </Select>
               {errors.pitchCategory && (
                 <Typography variant='caption' color='error.main'>
-                  * Vui lòng chọn loại sân
+                  *{errors.pitchCategory.message}
                 </Typography>
               )}
             </Box>
             <Box display='flex' justifyContent='end' gap={2} paddingY={2}>
               <Button variant='contained' type='submit'>
-                Thêm
+                {formatMessage({ id: 'app.common.button.add' })}
               </Button>
               <Button color='secondary' onClick={onClose}>
-                Hủy
+                {formatMessage({ id: 'app.common.button.cancel' })}
               </Button>
             </Box>
           </Box>

@@ -40,34 +40,22 @@ export const VenueCard = ({ data }: VenueCardProps) => {
             <DefaultImage />
           )}
         </CardMedia>
-        <CardContent sx={{ position: 'relative' }}>
+        <CardContent>
           <Typography fontWeight={500} fontSize={16}>
             {data.name}
           </Typography>
-          <Box display='flex' alignItems='center' justifyContent='space-between'>
-            <Box display='flex'>
-              <RoomOutlined fontSize='small' />
-              <Typography variant='body2'>{data.province}</Typography>
-            </Box>
-            {data.distance && (
-              <Typography color='primary.main' variant='body2' textAlign='right' my={1}>
-                {formatMessage(
-                  { id: 'app.home.nearby.result.card.distance' },
-                  { distance: convertDistance(data.distance) },
-                )}
-              </Typography>
-            )}
+          <Box display='flex' alignItems='center'>
+            <RoomOutlined fontSize='small' />
+            <Typography variant='body2'>{data.province}</Typography>
           </Box>
-
-          {/* <Box sx={{ my: 2 }}> */}
-          {/* <Typography>{data.description}</Typography> */}
-          {/* <IconButton sx={{ float: 'right', my: 1 }}>
-              <ArrowForward />
-            </IconButton> */}
-          {/* <Button fullWidth variant="contained" sx={{ mt: 3 }}>
-            Book now
-          </Button> */}
-          {/* </Box> */}
+          {data.distance && (
+            <Typography color='primary.main' variant='body2' textAlign='right'>
+              {formatMessage(
+                { id: 'app.home.nearby.result.card.distance' },
+                { distance: convertDistance(data.distance) },
+              )}
+            </Typography>
+          )}
         </CardContent>
       </Card>
     </Link>

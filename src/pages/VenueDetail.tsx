@@ -5,13 +5,13 @@ import PlaceIcon from '@mui/icons-material/Place';
 import SportsSoccerIcon from '@mui/icons-material/SportsSoccer';
 import StarIcon from '@mui/icons-material/Star';
 import { Box, Button, Divider, Grid, LinearProgress, Rating, Stack, Tab, Tabs, Typography } from '@mui/material';
-import { GoogleMap, MarkerF, useLoadScript } from '@react-google-maps/api';
+import { GoogleMap, MarkerF } from '@react-google-maps/api';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { SyntheticEvent, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { RATING_PAGE_LIMIT } from '@/common/constants';
-import { ImageLibrary, LoadingContainer, Seo } from '@/components';
+import { ImageLibrary, LoadingContainer, Seo, useGoogleMapApi } from '@/components';
 import NotFound from '@/components/NotFound';
 import { useAuth } from '@/hooks';
 import { useLocale } from '@/locales';
@@ -60,9 +60,7 @@ export const VenueDetail = () => {
   const ratingInstance = ratingKeys.list({ venueId: venue?.id, page: 1, limit: RATING_PAGE_LIMIT });
   const { data: ratings } = useQuery({ ...ratingInstance, enabled: !!venue });
 
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: import.meta.env.GOOGLE_MAPS_API_KEY || '',
-  });
+  const { isLoaded } = useGoogleMapApi();
 
   const handleChange = (_: SyntheticEvent, newValue: number) => {
     setTab(newValue);
@@ -134,7 +132,7 @@ export const VenueDetail = () => {
           </Grid>
           <Grid item xs={12} md={10} order={3} display='flex'>
             <PlaceIcon sx={{ marginRight: 1, color: 'primary.main' }} />
-            <Typography variant='body1'>{`${venue.address}, ${venue.district}, ${venue.province}`}</Typography>
+            <Typography variant='body1'>{venue.address}</Typography>
           </Grid>
           <Grid
             item

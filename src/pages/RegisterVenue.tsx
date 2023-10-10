@@ -9,7 +9,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { mixed, number, object, string } from 'yup';
 import { defaultLocation } from '@/common/constants';
-import { TextArea } from '@/components';
+import { MapPlace, TextArea } from '@/components';
 import { LocationPicker } from '@/components/LocationPicker';
 import { useAuth } from '@/hooks';
 import { useLocale } from '@/locales';
@@ -61,11 +61,21 @@ export const RegisterVenue = () => {
     mutationFn: venueService.create,
     onSuccess: () => {
       reset();
+      setCurrentDistrict([]);
+      setCurrentProvince('');
       setOpen(null);
       setClose(null);
       toast.success('Request successfully');
     },
   });
+
+  const handleClearInput = () => {
+    reset();
+    setCurrentDistrict([]);
+    setCurrentProvince('');
+    setOpen(null);
+    setClose(null);
+  };
 
   const onSubmitHandler = (data: CreateVenuePayload) => mutateVenue(data);
 
@@ -85,10 +95,11 @@ export const RegisterVenue = () => {
         },
       });
     }
-  }, [profile]);
+  }, [profile, navigate, pathname]);
 
   return (
     <Box component='form' onSubmit={handleSubmit(onSubmitHandler)}>
+      <Button onClick={handleClearInput}></Button>
       <Typography variant='h5'>{formatMessage({ id: 'app.register-venue.title' })}</Typography>
       <Typography variant='body2'>{formatMessage({ id: 'app.register-venue.sub-title' })}</Typography>
       {isMutateVenueSuccess && (
@@ -100,7 +111,7 @@ export const RegisterVenue = () => {
         <Grid container spacing={2} flex={{ xs: 1, md: 7 }}>
           <Grid item xs={12}>
             <Typography variant='body2'>{formatMessage({ id: 'app.register-venue.venue.name' })}</Typography>
-            <TextField {...register('name')} fullWidth size='small' />
+            <TextField {...register('name')} fullWidth size='small' placeholder='Sân bóng Lữ Đoàn' />
             {errors.name && (
               <Typography variant='body2' color='error.main'>
                 {errors.name.message}
@@ -110,7 +121,7 @@ export const RegisterVenue = () => {
 
           <Grid item xs={12}>
             <Typography variant='body2'>{formatMessage({ id: 'app.register-venue.venue.description' })}</Typography>
-            <TextArea minRows={3} {...register('description')} />
+            <TextArea minRows={3} {...register('description')} placeholder='...' />
             {errors.description && (
               <Typography variant='body2' color='error.main'>
                 {errors.description.message}
@@ -124,7 +135,13 @@ export const RegisterVenue = () => {
               options={provinces?.map((province) => province.name) || []}
               onInputChange={(_, value) => setCurrentProvince(value)}
               renderInput={(params) => (
-                <TextField {...params} value={currentProvince} {...register('province')} fullWidth />
+                <TextField
+                  {...params}
+                  value={currentProvince}
+                  {...register('province')}
+                  fullWidth
+                  placeholder={formatMessage({ id: 'app.register-venue.venue.province' })}
+                />
               )}
             />
             {errors.province && (
@@ -133,13 +150,19 @@ export const RegisterVenue = () => {
               </Typography>
             )}
           </Grid>
-
           <Grid item xs={12} md={6}>
             <Typography variant='body2'>{formatMessage({ id: 'app.register-venue.venue.district' })}</Typography>
             <Autocomplete
               size='small'
               options={currentDistrict || []}
-              renderInput={(params) => <TextField {...params} {...register('district')} fullWidth />}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  {...register('district')}
+                  fullWidth
+                  placeholder={formatMessage({ id: 'app.register-venue.venue.district' })}
+                />
+              )}
             />
             {errors.district && (
               <Typography variant='body2' color='error.main'>
@@ -149,7 +172,11 @@ export const RegisterVenue = () => {
           </Grid>
           <Grid item xs={12}>
             <Typography variant='body2'>{formatMessage({ id: 'app.register-venue.venue.address' })}</Typography>
-            <TextField {...register('address')} fullWidth size='small' />
+            <MapPlace
+              onChange={(value) => value && setValue('location', value)}
+              onInputChange={(value) => setValue('address', value)}
+              placeholder={formatMessage({ id: 'app.register-venue.venue.address' })}
+            />
             {errors.address && (
               <Typography variant='body2' color='error.main'>
                 {errors.address.message}

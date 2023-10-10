@@ -18,9 +18,19 @@ const authService = {
   getCurrentUser: async () => {
     const accessToken = Cookies.get('access_token');
     if (accessToken) {
-      const { data } = await axiosInstance.get<BaseResponse<User>>('/users/me');
+      try {
+        const { data } = await axiosInstance.get<BaseResponse<User>>('/users/me');
 
-      return data.data;
+        return data.data;
+      } catch (error) {
+        const cookies = document.cookie.split(';');
+
+        cookies.map((cookie) => {
+          const [name, _] = cookie.split('=');
+
+          Cookies.remove(name);
+        });
+      }
     } else {
       return null;
     }

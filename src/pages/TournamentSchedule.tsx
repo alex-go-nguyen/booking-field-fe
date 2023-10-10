@@ -82,7 +82,7 @@ export const TournamentSchedule = () => {
         </Box>
         {rounds?.map((round, roundId) => (
           <Box marginY={4} borderRadius={3} overflow='hidden' key={round.id}>
-            <Box bgcolor='primary.dark' padding={1} textAlign='center'>
+            <Box bgcolor='primary.main' padding={1} textAlign='center'>
               <Typography sx={{ color: 'primary.contrastText' }}>
                 {convertRoundName(round.no, tournament.data.rounds.length, tournament.data.type)}
               </Typography>

@@ -64,7 +64,7 @@ export const SetScheduleBox = ({ data, tournament, isOpen, onClose, onSubmit }: 
     enabled: !!selectedPitch && !!selectedDate,
   });
 
-  const times = bookings && findFreeTime(bookings.data);
+  const times = bookings && venue && findFreeTime(bookings.data, venue);
 
   const handleSubmit = () => {
     if (selectedTime && selectedPitch) {

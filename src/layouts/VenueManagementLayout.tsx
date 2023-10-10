@@ -12,7 +12,7 @@ export const VenueManagementLayout = () => {
 
   const { profile, isFetched } = useAuth();
 
-  const { value: open, setFalse: closeDrawer, toggle: toggleDrawer } = useBoolean(false);
+  const { value: open, toggle: toggleDrawer } = useBoolean(true);
 
   const { formatMessage } = useLocale();
 
@@ -114,7 +114,6 @@ export const VenueManagementLayout = () => {
                     },
                   }}
                   onClick={() => {
-                    closeDrawer();
                     navigate(`/venue-management/${item.href}`);
                   }}
                 >
@@ -130,7 +129,7 @@ export const VenueManagementLayout = () => {
               ))}
             </List>
           </Box>
-          <Box display='flex' flexDirection='column' height='100vh' mr={0} width='100%'>
+          <Box display='flex' flexDirection='column' height='100vh' width='100%'>
             <Box display='flex' alignItems='center' justifyContent={{ xs: 'space-between', md: 'end' }} m={1}>
               <IconButton
                 color='primary'
@@ -157,9 +156,9 @@ export const VenueManagementLayout = () => {
               sx={{
                 backgroundColor: (theme) =>
                   theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
-                borderTopLeftRadius: 3,
-                borderTopRightRadius: 3,
-                overflowY: 'scroll',
+                borderTopLeftRadius: 6,
+                borderTopRightRadius: 6,
+                mx: 2,
               }}
               flex={1}
               height='100%'

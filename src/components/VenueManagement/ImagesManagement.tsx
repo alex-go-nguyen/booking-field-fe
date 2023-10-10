@@ -19,14 +19,24 @@ export const ImagesManagement = () => {
 
   const { value: isOpenConfirmBox, setTrue: openConfirmBox, setFalse: closeConfirmBox } = useBoolean(false);
 
-  const {
-    data: uploadData,
-    mutate: uploadImageMutation,
-    isSuccess: isUploadSucess,
-    isLoading: isUploading,
-    reset: resetStateUpload,
-  } = useMutation({
-    mutationFn: (files: FileList) => mediaService.uploadImages(files),
+  const { mutate: uploadImageMutation, isLoading: isUploading } = useMutation({
+    mutationFn: mediaService.uploadImages,
+    onSuccess: (data) => {
+      venue &&
+        updateVenueMutation({
+          id: venue.id,
+          data: {
+            imageList: [
+              ...(venue.imageList ? [...venue.imageList] : []),
+              ...data.map((item) => {
+                return {
+                  imagePath: item.url,
+                };
+              }),
+            ],
+          },
+        });
+    },
   });
 
   const handleDelete = () => {
@@ -50,25 +60,6 @@ export const ImagesManagement = () => {
       setFiles(null);
     }
   }, [files, uploadImageMutation]);
-
-  useEffect(() => {
-    if (venue && isUploadSucess) {
-      updateVenueMutation({
-        id: venue.id,
-        data: {
-          imageList: [
-            ...(venue.imageList ? [...venue.imageList] : []),
-            ...uploadData.map((item) => {
-              return {
-                imagePath: item.url,
-              };
-            }),
-          ],
-        },
-      });
-      resetStateUpload();
-    }
-  }, [isUploadSucess, resetStateUpload, updateVenueMutation, uploadData, venue]);
 
   return (
     venue && (

@@ -1,6 +1,6 @@
 import { NotificationsOutlined } from '@mui/icons-material';
 import { Badge, Box, Divider, IconButton, Menu, MenuItem, Tooltip, Typography } from '@mui/material';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { commonImages } from '@/assets/images/common';
@@ -9,6 +9,7 @@ import { OrderEnum } from '@/common/enums/order.enum';
 import { useAuth, useMenu } from '@/hooks';
 import { useLocale } from '@/locales';
 import { notificationKeys } from '@/services/notification/notification.query';
+import notificationService from '@/services/notification/notification.service';
 import { getRelativeTimeFromNow } from '@/utils';
 
 export const MenuNotification = () => {
@@ -17,6 +18,8 @@ export const MenuNotification = () => {
   const navigate = useNavigate();
 
   const { formatMessage } = useLocale();
+
+  const queryClient = useQueryClient();
 
   const {
     anchorEl: anchorNotification,
@@ -37,22 +40,45 @@ export const MenuNotification = () => {
   });
   const { data: notifications, refetch: notificationRefetch } = useQuery({
     ...notificationInstance,
-    enabled: !!profile,
+    enabled: Boolean(profile),
+  });
+
+  const countNotSeenNotificationsInstance = notificationKeys.countNotSeen();
+  const { data: countNotSeen, isLoading: isLoadingCountNotSeen } = useQuery({
+    ...countNotSeenNotificationsInstance,
+    enabled: Boolean(profile),
+  });
+
+  const { mutate: mutateUpdateSeenStatus } = useMutation({
+    mutationFn: notificationService.bulkUpdateSeenStatus,
+    onSuccess: () => {
+      queryClient.setQueryData(countNotSeenNotificationsInstance.queryKey, 0);
+    },
   });
 
   useEffect(() => {
-    if (!profile) {
+    if (profile) {
       notificationRefetch();
     }
-  }, [profile, notificationRefetch]);
+  }, [profile, notificationRefetch, isLoadingCountNotSeen]);
 
   return profile && notifications ? (
     <>
       <Tooltip title='Notifications'>
-        <IconButton onClick={openNotification} color='secondary'>
-          <Badge badgeContent={notifications?.data.length} color='primary'>
+        <IconButton
+          onClick={(e) => {
+            openNotification(e);
+            mutateUpdateSeenStatus();
+          }}
+          color='secondary'
+        >
+          {countNotSeen > 0 ? (
+            <Badge badgeContent={countNotSeen > 0 ? countNotSeen : ''} color='primary'>
+              <NotificationsOutlined />
+            </Badge>
+          ) : (
             <NotificationsOutlined />
-          </Badge>
+          )}
         </IconButton>
       </Tooltip>
       <Menu

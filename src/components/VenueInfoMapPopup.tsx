@@ -62,7 +62,7 @@ export const VenueInfoMapPopup = ({ data }: VenueInfoMapPopupProps) => {
           <Box p={2}>
             <Box display='flex' alignItems='center' gap={2} marginY={1}>
               <LocationOn color='primary' />
-              <Typography>{`${data.address}, ${data.district}, ${data.province}`}</Typography>
+              <Typography>{data.address}</Typography>
             </Box>
             <Box display='flex' alignItems='center' gap={2} marginY={1}>
               <AccessTime color='primary' />
@@ -74,7 +74,7 @@ export const VenueInfoMapPopup = ({ data }: VenueInfoMapPopupProps) => {
           <Box px={2}>
             {ratings && ratings.data.length > 0 ? (
               ratings.data.map((rating) => (
-                <Box display='flex' justifyContent='space-between' paddingY={2}>
+                <Box display='flex' justifyContent='space-between' paddingY={2} key={rating.id}>
                   <Box>
                     <Typography
                       fontWeight={500}
